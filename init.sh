@@ -5,15 +5,6 @@ set -e
 
 echo "Starting setup for Debian 13..."
 
-# PRE-CHECK: Fix for "Conflicting values set for option Signed-By" error
-# We unconditionally remove the script-generated vscode.list before updating.
-# If a conflict exists, this removes one side of the conflict.
-# If no conflict exists (and this was the only config), we will re-add it in Step 9 if needed.
-if [ -f "/etc/apt/sources.list.d/vscode.list" ]; then
-    echo "Removing /etc/apt/sources.list.d/vscode.list to ensure clean apt update..."
-    sudo rm -f "/etc/apt/sources.list.d/vscode.list"
-fi
-
 # Update and Upgrade the system
 echo "Updating system..."
 sudo apt update && sudo apt upgrade -y
@@ -21,16 +12,23 @@ sudo apt update && sudo apt upgrade -y
 # Install basic dependencies for the script
 sudo apt install -y curl wget gpg apt-transport-https ca-certificates lsb-release
 
-# 1. Add $USER to sudo group and grant passwordless execution
-echo "Configuring sudo privileges..."
-sudo usermod -aG sudo "$USER"
-# Create a file in sudoers.d to allow passwordless execution for the user
-echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER-nopasswd"
-sudo chmod 0440 "/etc/sudoers.d/$USER-nopasswd"
-
 # 2. Install Git
 echo "Installing Git..."
 sudo apt install -y git
+
+# Configure global Git identity
+echo "Configuring Git global user..."
+read -p "Do you want to configure Git global user now? (y/N) " response
+if [[ "$response" =~ ^[yY](es)?$ ]]; then
+    read -p "Enter your Git email address: " git_email
+    if [ -n "$git_email" ]; then
+        git config --global user.name "$USER"
+        git config --global user.email "$git_email"
+        echo "Git configured with user.name=$USER and user.email=$git_email"
+    else
+        echo "No email provided. Skipping Git global configuration."
+    fi
+fi
 
 # 3. Install Google Chrome
 echo "Installing Google Chrome..."
@@ -57,6 +55,20 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 else
     echo "Oh-My-Zsh is already installed."
+fi
+
+# Configure Ohm-My-Zsh theme
+read -p "Do you want to change the Oh-My-Zsh theme? (y/N) " response
+if [[ "$response" =~ ^[yY](es)?$ ]]; then
+    echo "Available themes: agnoster, robbyrussell, bira, ys, af-magic, gnzh, etc."
+    read -p "Enter the theme name you want to use: " zsh_theme
+    if grep -q "^ZSH_THEME=" "$HOME/.zshrc"; then
+        sed -i "s/^ZSH_THEME=.*/ZSH_THEME=\"$zsh_theme\"/" "$HOME/.zshrc"
+        echo "Oh-My-Zsh theme set to $zsh_theme"
+    else
+        echo "ZSH_THEME=\"$zsh_theme\"" >> "$HOME/.zshrc"
+        echo "Oh-My-Zsh theme set to $zsh_theme"
+    fi
 fi
 
 # 6 & 7. Install Norminette and Flake8
