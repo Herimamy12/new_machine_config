@@ -1,0 +1,25 @@
+# Configuration files
+config.sh
+
+# Log files
+*.log
+
+# Backup directories
+.config_backups/
+.ssh_backup_*/
+
+# Temporary files
+*.deb
+*.gpg
+/tmp/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

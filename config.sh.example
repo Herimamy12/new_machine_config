@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# ============================================================================
+# Configuration File for init.sh
+# ============================================================================
+# Copy this file to config.sh and customize according to your needs
+# Usage: cp config.sh.example config.sh
+# Then edit config.sh and run init.sh
+# ============================================================================
+
+# ============================================================================
+# Git Configuration
+# ============================================================================
+# Set to "true" to configure Git automatically
+CONFIGURE_GIT="false"
+GIT_EMAIL="your.email@example.com"
+# GIT_NAME defaults to $USER if not set
+GIT_NAME=""
+
+# ============================================================================
+# Zsh Theme Configuration
+# ============================================================================
+# Set to "true" to change Oh-My-Zsh theme automatically
+CHANGE_ZSH_THEME="false"
+# Popular themes: agnoster, robbyrussell, bira, ys, af-magic, gnzh
+ZSH_THEME="robbyrussell"
+
+# ============================================================================
+# Installation Options
+# ============================================================================
+# Set to "false" to skip installation of specific components
+INSTALL_GIT="true"
+INSTALL_CHROME="true"
+INSTALL_BRAVE="true"
+INSTALL_ZSH="true"
+INSTALL_PYTHON_TOOLS="true"
+INSTALL_NODE="true"
+INSTALL_VSCODE="true"
+INSTALL_DOCKER="true"
+INSTALL_CPP_TOOLS="true"
+
+# ============================================================================
+# Auto-reboot Configuration
+# ============================================================================
+# Set to "true" to automatically reboot after installation
+AUTO_REBOOT="false"
