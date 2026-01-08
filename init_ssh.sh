@@ -60,15 +60,15 @@ fi
 # Create target directory if it doesn't exist
 if [ ! -d "$SSH_TARGET_DIR" ]; then
     log_info "Creating directory $SSH_TARGET_DIR..."
-    mkdir -p "$SSH_TARGET_DIR"
+    sudo mkdir -p "$SSH_TARGET_DIR"
 fi
 
 # Backup existing SSH keys
 if [ -f "$SSH_TARGET_DIR/id_rsa" ] || [ -f "$SSH_TARGET_DIR/id_rsa.pub" ]; then
     BACKUP_DIR="${HOME}/.ssh_backup_$(date +%Y%m%d_%H%M%S)"
     log_warning "Existing SSH keys found. Creating backup in $BACKUP_DIR..."
-    mkdir -p "$BACKUP_DIR"
-    cp -r "$SSH_TARGET_DIR"/* "$BACKUP_DIR/" 2>/dev/null || true
+    sudo mkdir -p "$BACKUP_DIR"
+    sudo cp -r "$SSH_TARGET_DIR"/* "$BACKUP_DIR/" 2>/dev/null || true
     log_success "Backup created successfully"
 fi
 
@@ -100,16 +100,16 @@ sudo chown -R "$USER:$USER" "$SSH_TARGET_DIR"
 
 # Set permissions
 log_info "Setting proper permissions..."
-chmod 700 "$SSH_TARGET_DIR"
+sudo chmod 700 "$SSH_TARGET_DIR"
 
 for file in "${copied_files[@]}"; do
     case "$file" in
         id_rsa|known_hosts|known_hosts.old)
-            chmod 600 "$SSH_TARGET_DIR/$file"
+            sudo chmod 600 "$SSH_TARGET_DIR/$file"
             log_info "Set 600 permissions for $file"
             ;;
         id_rsa.pub)
-            chmod 644 "$SSH_TARGET_DIR/$file"
+            sudo chmod 644 "$SSH_TARGET_DIR/$file"
             log_info "Set 644 permissions for $file"
             ;;
     esac
